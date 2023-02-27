@@ -28,17 +28,17 @@ func InitQuestionCollection() error {
 	return nil
 }
 
-func InsertQuestion(inputQuestion *Question) (*Question, error) {
+func InsertQuestion(inputQuestion *Question) error {
 	db := GetDb()
 
 	existingQuestion, err := FindQuestionByTitleSlug(inputQuestion.titleSlug)
 
 	if existingQuestion != nil {
-		return nil, errors.New("Question already exists")
+		return errors.New("Question already exists")
 	}
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	questionDocument := c.NewDocumentOf(inputQuestion)
@@ -46,21 +46,34 @@ func InsertQuestion(inputQuestion *Question) (*Question, error) {
 	_, err = db.InsertOne(QuestionCollectionName, questionDocument)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	question := new(Question)
 	err = questionDocument.Unmarshal(question)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return question, nil
+	return nil
 }
 
-func InsertQuestions(inputQuestions []*Question) ([]*Question, error) {
+func InsertQuestions(inputQuestions []*Question) error {
 	db := GetDb()
+	var questions []*c.Document
+
+	for _, question := range inputQuestions {
+		questionDocument := c.NewDocumentOf(question)
+		questions = append(questions, questionDocument)
+	}
+
+	err := db.Insert(QuestionCollectionName, questions...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func FindQuestionByTitleSlug(titleSlug string) (*Question, error) {

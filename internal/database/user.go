@@ -27,23 +27,24 @@ func InitUserCollection() error {
 	return nil
 }
 
-func UpdateUser(user *User) (*User, error) {
+func UpdateUser(user *User) error {
 	db := GetDb()
 
-	updates := make(map[string]interface{})
-	updates["leetcodeId"] = user.leetcodeId
-	updates["discordId"] = user.discordId
+	updates := map[string]interface{}{
+		"leetcodeId": user.leetcodeId,
+		"discordId":  user.discordId,
+	}
 
 	err := db.Query(UserCollectionName).Where((*c.Criteria)(c.Field("id").Eq(user.id))).Update(updates)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return user, nil
+	return nil
 }
 
 // TODO: Improve error handling
-func InsertUser(inputUser *User) (*User, error) {
+func InsertUser(inputUser *User) error {
 	db := GetDb()
 
 	userWithDiscordId, _ := FindUserByDiscordId(inputUser.discordId)
@@ -55,7 +56,7 @@ func InsertUser(inputUser *User) (*User, error) {
 	}
 
 	if userWithLeetcodeId != nil {
-		return nil, errors.New("Leetcode Id already claimed")
+		return errors.New("Leetcode Id already claimed")
 	}
 
 	user := new(User)
@@ -64,16 +65,16 @@ func InsertUser(inputUser *User) (*User, error) {
 
 	_, err := db.InsertOne(UserCollectionName, userDocument)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	err = userDocument.Unmarshal(user)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return user, nil
+	return nil
 }
 
 func FindUserByDiscordId(discordId string) (*User, error) {
