@@ -10,7 +10,7 @@ var DIFFICULTY_MAPPING = map[string]int{
 
 var VALID_COMMANDS = [...]string{"!user", "!help", "!claim", "!challenge", "!rank", "!status", "!new-challenge", "!group-status"}
 
-type ICommandExecutor interface {
+type ICommandController interface {
 	validateCommand() string
 	parseCommand(message string) *BotCommand
 	commandClaim(discordId string, leetcodeId string) string
@@ -20,16 +20,15 @@ type ICommandExecutor interface {
 	commandNewChallenge() string
 	commandUser(leetcodeId string) string
 	commandGroupStatus() string
-	run() string
 }
 
-type CommandExecutor struct{}
+type CommandController struct{}
 
-func (c *CommandExecutor) parseCommand(message string) *BotCommand {
+func (c *CommandController) parseCommand(message string) *BotCommand {
 	return NewBotCommand(message)
 }
 
-func (c *CommandExecutor) validateCommand(message string, expectedCommand string) *BotCommand {
+func (c *CommandController) validateCommand(message string, expectedCommand string) *BotCommand {
 	parsedCommand := c.parseCommand(message)
 	if parsedCommand.action == expectedCommand {
 		parsedCommand.errors = append(parsedCommand.errors, errors.New("Bot command does not match expected command"))
@@ -38,42 +37,37 @@ func (c *CommandExecutor) validateCommand(message string, expectedCommand string
 	return parsedCommand
 }
 
-func (c *CommandExecutor) commandClaim(discordId string, leetcodeId string) (string, error) {
-	// TODO: Implement
-	return "1", nil
-}
-
-func (c *CommandExecutor) commandChallenge() string {
+func (c *CommandController) commandClaim(discordId string, leetcodeId string) string {
 	// TODO: Implement
 	return "1"
 }
 
-func (c *CommandExecutor) commandRank(leetcodeId string) string {
+func (c *CommandController) commandChallenge() string {
 	// TODO: Implement
 	return "1"
 }
 
-func (c *CommandExecutor) commandStatus(leetcodeId string) string {
+func (c *CommandController) commandRank(leetcodeId string) string {
 	// TODO: Implement
 	return "1"
 }
 
-func (c *CommandExecutor) commandNewChallenge() string {
+func (c *CommandController) commandStatus(leetcodeId string) string {
 	// TODO: Implement
 	return "1"
 }
 
-func (c *CommandExecutor) commandUser(leetcodeId string) string {
+func (c *CommandController) commandNewChallenge() string {
 	// TODO: Implement
 	return "1"
 }
 
-func (c *CommandExecutor) commandGroupStatus() string {
+func (c *CommandController) commandUser(leetcodeId string) string {
 	// TODO: Implement
 	return "1"
 }
 
-func run(c *CommandExecutor) string {
+func (c *CommandController) commandGroupStatus() string {
 	// TODO: Implement
 	return "1"
 }
