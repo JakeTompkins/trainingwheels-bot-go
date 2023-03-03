@@ -40,7 +40,6 @@ func InsertQuestion(inputQuestion *Question) error {
 	if err != nil {
 		return err
 	}
-
 	questionDocument := c.NewDocumentOf(inputQuestion)
 
 	_, err = db.InsertOne(QuestionCollectionName, questionDocument)
