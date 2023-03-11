@@ -16,7 +16,6 @@ type Challenge struct {
 
 func InitChallengeCollection() error {
 	db := GetDb()
-	defer db.Close()
 
 	if hasCollection, _ := db.HasCollection(ChallengeCollectionName); !hasCollection {
 		err := db.CreateCollection(ChallengeCollectionName)
@@ -30,7 +29,6 @@ func InitChallengeCollection() error {
 
 func InsertChallenge(challenge *Challenge) error {
 	db := GetDb()
-	defer db.Close()
 
 	if challenge.Id == "" {
 		return errors.New("Cannot insert challenge with non-empty ID")
@@ -47,7 +45,6 @@ func InsertChallenge(challenge *Challenge) error {
 
 func LoadChallenge(id string) (*Challenge, error) {
 	db := GetDb()
-	defer db.Close()
 	var challenge Challenge
 
 	challengeDocument, err := db.Query(ChallengeCollectionName).
@@ -66,7 +63,6 @@ func LoadChallenge(id string) (*Challenge, error) {
 
 func LoadLatestChallenge() (*Challenge, error) {
 	db := GetDb()
-	defer db.Close()
 	var challenge Challenge
 
 	challengeDocument, err := db.Query(ChallengeCollectionName).

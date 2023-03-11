@@ -16,7 +16,6 @@ type ChallengeQuestion struct {
 
 func InitChallengeQuestionCollection() error {
 	db := GetDb()
-	defer db.Close()
 
 	if hasCollection, _ := db.HasCollection(ChallengeQuestionCollectionName); !hasCollection {
 		err := db.CreateCollection(ChallengeQuestionCollectionName)
@@ -30,7 +29,6 @@ func InitChallengeQuestionCollection() error {
 
 func InsertChallengeQuestion(challengeQuestion *ChallengeQuestion) error {
 	db := GetDb()
-	defer db.Close()
 
 	challengeQuestionDocument := c.NewDocumentOf(challengeQuestion)
 
@@ -43,7 +41,6 @@ func InsertChallengeQuestion(challengeQuestion *ChallengeQuestion) error {
 
 func LoadByChallengeId(challengeId string) ([]*ChallengeQuestion, error) {
 	db := GetDb()
-	defer db.Close()
 
 	var challengeQuestions []*ChallengeQuestion
 
@@ -70,7 +67,6 @@ func LoadByChallengeId(challengeId string) ([]*ChallengeQuestion, error) {
 
 func LoadByTitleSlug(titleSlug string) (*ChallengeQuestion, error) {
 	db := GetDb()
-	defer db.Close()
 
 	var challengeQuestion ChallengeQuestion
 

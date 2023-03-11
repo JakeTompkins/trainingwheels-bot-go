@@ -16,7 +16,6 @@ type User struct {
 
 func InitUserCollection() error {
 	db := GetDb()
-	defer db.Close()
 
 	if hasCollection, _ := db.HasCollection(UserCollectionName); !hasCollection {
 		err := db.CreateCollection(UserCollectionName)
@@ -30,7 +29,6 @@ func InitUserCollection() error {
 
 func UpdateUser(user *User) error {
 	db := GetDb()
-	defer db.Close()
 
 	updates := map[string]interface{}{
 		"leetcodeId": user.LeetcodeId,
@@ -50,7 +48,6 @@ func UpdateUser(user *User) error {
 // TODO: Improve error handling
 func InsertUser(inputUser *User) error {
 	db := GetDb()
-	defer db.Close()
 
 	userWithDiscordId, _ := FindUserByDiscordId(inputUser.DiscordId)
 	userWithLeetcodeId, _ := FindUserByLeetcodeId(inputUser.LeetcodeId)
@@ -84,7 +81,6 @@ func InsertUser(inputUser *User) error {
 
 func FindUserByDiscordId(discordId string) (*User, error) {
 	db := GetDb()
-	defer db.Close()
 
 	user := new(User)
 
@@ -106,7 +102,6 @@ func FindUserByDiscordId(discordId string) (*User, error) {
 
 func FindUserByLeetcodeId(leetcodeId string) (*User, error) {
 	db := GetDb()
-	defer db.Close()
 
 	user := new(User)
 

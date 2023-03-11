@@ -17,7 +17,6 @@ type Question struct {
 
 func InitQuestionCollection() error {
 	db := GetDb()
-	defer db.Close()
 
 	if hasCollection, _ := db.HasCollection(QuestionCollectionName); !hasCollection {
 		err := db.CreateCollection(QuestionCollectionName)
@@ -31,7 +30,6 @@ func InitQuestionCollection() error {
 
 func InsertQuestion(inputQuestion *Question) error {
 	db := GetDb()
-	defer db.Close()
 
 	existingQuestion, err := FindQuestionByTitleSlug(inputQuestion.TitleSlug)
 
@@ -62,7 +60,6 @@ func InsertQuestion(inputQuestion *Question) error {
 
 func InsertQuestions(inputQuestions []*Question) error {
 	db := GetDb()
-	defer db.Close()
 	var questions []*c.Document
 
 	for _, question := range inputQuestions {
@@ -80,7 +77,6 @@ func InsertQuestions(inputQuestions []*Question) error {
 
 func FindQuestionByTitleSlug(titleSlug string) (*Question, error) {
 	db := GetDb()
-	defer db.Close()
 
 	question := new(Question)
 

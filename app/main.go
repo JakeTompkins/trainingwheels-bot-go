@@ -10,6 +10,9 @@ import (
 )
 
 func main() {
+	db := database.GetDb()
+	defer db.Close()
+
 	database.InitUserCollection()
 	database.InitQuestionCollection()
 	database.InitChallengeCollection()
