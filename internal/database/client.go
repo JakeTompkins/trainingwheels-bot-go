@@ -8,12 +8,14 @@ import (
 
 var client *c.DB
 
-func GetDb() *c.DB {
-	var once sync.Once
-	onceBody := func() {
+var (
+	once     sync.Once
+	onceBody = func() {
 		client, _ = c.Open("clover-db")
 	}
+)
 
+func GetDb() *c.DB {
 	once.Do(onceBody)
 
 	return client

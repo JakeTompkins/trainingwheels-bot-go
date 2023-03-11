@@ -9,13 +9,14 @@ import (
 const UserCollectionName = "users"
 
 type User struct {
-	id         string `clover:"_id"`
-	discordId  string `clover:"discordId"`
-	leetcodeId string `clover:"leetcodeId"`
+	Id         string `clover:"_id"        json:"id"`
+	DiscordId  string `clover:"discordId"  json:"discordId"`
+	LeetcodeId string `clover:"leetcodeId" json:"leetcodeId"`
 }
 
 func InitUserCollection() error {
 	db := GetDb()
+	defer db.Close()
 
 	if hasCollection, _ := db.HasCollection(UserCollectionName); !hasCollection {
 		err := db.CreateCollection(UserCollectionName)
@@ -29,13 +30,16 @@ func InitUserCollection() error {
 
 func UpdateUser(user *User) error {
 	db := GetDb()
+	defer db.Close()
 
 	updates := map[string]interface{}{
-		"leetcodeId": user.leetcodeId,
-		"discordId":  user.discordId,
+		"leetcodeId": user.LeetcodeId,
+		"discordId":  user.DiscordId,
 	}
 
-	err := db.Query(UserCollectionName).Where((*c.Criteria)(c.Field("id").Eq(user.id))).Update(updates)
+	err := db.Query(UserCollectionName).
+		Where((*c.Criteria)(c.Field("id").Eq(user.Id))).
+		Update(updates)
 	if err != nil {
 		return err
 	}
@@ -46,12 +50,13 @@ func UpdateUser(user *User) error {
 // TODO: Improve error handling
 func InsertUser(inputUser *User) error {
 	db := GetDb()
+	defer db.Close()
 
-	userWithDiscordId, _ := FindUserByDiscordId(inputUser.discordId)
-	userWithLeetcodeId, _ := FindUserByLeetcodeId(inputUser.leetcodeId)
+	userWithDiscordId, _ := FindUserByDiscordId(inputUser.DiscordId)
+	userWithLeetcodeId, _ := FindUserByLeetcodeId(inputUser.LeetcodeId)
 
 	if userWithDiscordId != nil {
-		userWithDiscordId.leetcodeId = inputUser.leetcodeId
+		userWithDiscordId.LeetcodeId = inputUser.LeetcodeId
 		return UpdateUser(userWithDiscordId)
 	}
 
@@ -79,10 +84,13 @@ func InsertUser(inputUser *User) error {
 
 func FindUserByDiscordId(discordId string) (*User, error) {
 	db := GetDb()
+	defer db.Close()
 
 	user := new(User)
 
-	userDocument, err := db.Query(UserCollectionName).Where((*c.Criteria)(c.Field("discordId").Eq(discordId))).FindFirst()
+	userDocument, err := db.Query(UserCollectionName).
+		Where((*c.Criteria)(c.Field("discordId").Eq(discordId))).
+		FindFirst()
 	if err != nil {
 		return nil, err
 	}
@@ -98,10 +106,13 @@ func FindUserByDiscordId(discordId string) (*User, error) {
 
 func FindUserByLeetcodeId(leetcodeId string) (*User, error) {
 	db := GetDb()
+	defer db.Close()
 
 	user := new(User)
 
-	userDocument, err := db.Query(UserCollectionName).Where((*c.Criteria)(c.Field("leetcodeId").Eq(leetcodeId))).FindFirst()
+	userDocument, err := db.Query(UserCollectionName).
+		Where((*c.Criteria)(c.Field("leetcodeId").Eq(leetcodeId))).
+		FindFirst()
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-module jaketompkins/trainingwheels-bot-go
+module github.com/jaketompkins/trainingwheels-bot-go
 
 go 1.20
 
@@ -20,6 +20,7 @@ require (
 	github.com/ostafen/clover v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/valyala/fastjson v1.6.4 // indirect
 	go.opencensus.io v0.22.5 // indirect
 	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
 	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect

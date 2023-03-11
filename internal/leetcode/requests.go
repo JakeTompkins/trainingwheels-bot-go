@@ -48,7 +48,11 @@ func BuildUserRankQuery(leetcodeId string) (string, map[string]string) {
 	return query, variables
 }
 
-func BuildUserSubmissionsQuery(leetcodeId string, offset int, skip int) (string, map[string]interface{}) {
+func BuildUserSubmissionsQuery(
+	leetcodeId string,
+	offset int,
+	skip int,
+) (string, map[string]interface{}) {
 	query := `
 		query userSolutionTopics($username: String!, $orderBy: TopicSortingOption, $skip: Int, $first: Int) {
 			userSolutionTopics(

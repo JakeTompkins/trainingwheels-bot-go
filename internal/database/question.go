@@ -9,14 +9,15 @@ import (
 const QuestionCollectionName = "questions"
 
 type Question struct {
-	id         string `clover:"_id"`
-	title      string `clover:"title"`
-	titleSlug  string `clover:"titleSlug"`
-	difficulty int    `clover:"difficulty"`
+	Id         string `clover:"_id"        json:"_id"`
+	Title      string `clover:"title"      json:"title"`
+	TitleSlug  string `clover:"titleSlug"  json:"titleSlug"`
+	Difficulty int    `clover:"difficulty" json:"difficulty"`
 }
 
 func InitQuestionCollection() error {
 	db := GetDb()
+	defer db.Close()
 
 	if hasCollection, _ := db.HasCollection(QuestionCollectionName); !hasCollection {
 		err := db.CreateCollection(QuestionCollectionName)
@@ -30,8 +31,9 @@ func InitQuestionCollection() error {
 
 func InsertQuestion(inputQuestion *Question) error {
 	db := GetDb()
+	defer db.Close()
 
-	existingQuestion, err := FindQuestionByTitleSlug(inputQuestion.titleSlug)
+	existingQuestion, err := FindQuestionByTitleSlug(inputQuestion.TitleSlug)
 
 	if existingQuestion != nil {
 		return errors.New("Question already exists")
@@ -60,6 +62,7 @@ func InsertQuestion(inputQuestion *Question) error {
 
 func InsertQuestions(inputQuestions []*Question) error {
 	db := GetDb()
+	defer db.Close()
 	var questions []*c.Document
 
 	for _, question := range inputQuestions {
@@ -77,16 +80,23 @@ func InsertQuestions(inputQuestions []*Question) error {
 
 func FindQuestionByTitleSlug(titleSlug string) (*Question, error) {
 	db := GetDb()
+	defer db.Close()
 
 	question := new(Question)
 
-	questionDocument, err := db.Query(QuestionCollectionName).Where((*c.Criteria)(c.Field("titleSlug").Eq(titleSlug))).FindFirst()
+	questionDocument, err := db.Query(QuestionCollectionName).
+		Where((*c.Criteria)(c.Field("titleSlug").Eq(titleSlug))).
+		FindFirst()
 
 	if questionDocument == nil || err != nil {
 		return nil, err
 	}
 
-	questionDocument.Unmarshal(question)
+	err = questionDocument.Unmarshal(question)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return question, nil
 }

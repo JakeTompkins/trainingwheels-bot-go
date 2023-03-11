@@ -10,14 +10,29 @@ import (
 const ChallengeCollectionName = "weekly_challenge"
 
 type Challenge struct {
-	id   string    `clover:"_id"`
-	date time.Time `clover:"date"`
+	Id   string    `clover:"_id"  json:"_id"`
+	Date time.Time `clover:"date" json:"date"`
+}
+
+func InitChallengeCollection() error {
+	db := GetDb()
+	defer db.Close()
+
+	if hasCollection, _ := db.HasCollection(ChallengeCollectionName); !hasCollection {
+		err := db.CreateCollection(ChallengeCollectionName)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func InsertChallenge(challenge *Challenge) error {
 	db := GetDb()
+	defer db.Close()
 
-	if challenge.id == "" {
+	if challenge.Id == "" {
 		return errors.New("Cannot insert challenge with non-empty ID")
 	}
 
@@ -32,9 +47,12 @@ func InsertChallenge(challenge *Challenge) error {
 
 func LoadChallenge(id string) (*Challenge, error) {
 	db := GetDb()
+	defer db.Close()
 	var challenge Challenge
 
-	challengeDocument, err := db.Query(ChallengeCollectionName).Where(c.Field("id").Eq(id)).FindFirst()
+	challengeDocument, err := db.Query(ChallengeCollectionName).
+		Where(c.Field("id").Eq(id)).
+		FindFirst()
 	if err != nil {
 		return nil, err
 	}
@@ -48,9 +66,12 @@ func LoadChallenge(id string) (*Challenge, error) {
 
 func LoadLatestChallenge() (*Challenge, error) {
 	db := GetDb()
+	defer db.Close()
 	var challenge Challenge
 
-	challengeDocument, err := db.Query(ChallengeCollectionName).Sort(c.SortOption{Field: "date", Direction: -1}).FindFirst()
+	challengeDocument, err := db.Query(ChallengeCollectionName).
+		Sort(c.SortOption{Field: "date", Direction: -1}).
+		FindFirst()
 	if err != nil {
 		return nil, err
 	}

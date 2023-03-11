@@ -4,22 +4,37 @@ import (
 	c "github.com/ostafen/clover"
 )
 
-const ChallengeQuestionCollection = "challenge_questions"
+const ChallengeQuestionCollectionName = "challenge_questions"
 
 type ChallengeQuestion struct {
-	id          string `clover:"_id"`
-	challengeId string `clover:"challengeId"`
-	titleSlug   string `clover:"titleSlug"`
-	title       string `clover:"title"`
-	difficulty  int    `clover:"difficulty"`
+	Id          string `clover:"_id"         json:"_id"`
+	ChallengeId string `clover:"challengeId" json:"challengeId"`
+	TitleSlug   string `clover:"titleSlug"   json:"titleSlug"`
+	Title       string `clover:"title"       json:"title"`
+	Difficulty  int    `clover:"difficulty"  json:"difficulty"`
+}
+
+func InitChallengeQuestionCollection() error {
+	db := GetDb()
+	defer db.Close()
+
+	if hasCollection, _ := db.HasCollection(ChallengeQuestionCollectionName); !hasCollection {
+		err := db.CreateCollection(ChallengeQuestionCollectionName)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func InsertChallengeQuestion(challengeQuestion *ChallengeQuestion) error {
 	db := GetDb()
+	defer db.Close()
 
 	challengeQuestionDocument := c.NewDocumentOf(challengeQuestion)
 
-	if _, err := db.InsertOne(ChallengeQuestionCollection, challengeQuestionDocument); err != nil {
+	if _, err := db.InsertOne(ChallengeQuestionCollectionName, challengeQuestionDocument); err != nil {
 		return err
 	}
 
@@ -28,10 +43,13 @@ func InsertChallengeQuestion(challengeQuestion *ChallengeQuestion) error {
 
 func LoadByChallengeId(challengeId string) ([]*ChallengeQuestion, error) {
 	db := GetDb()
+	defer db.Close()
 
 	var challengeQuestions []*ChallengeQuestion
 
-	challengeQuestionDocuments, err := db.Query(ChallengeQuestionCollection).Where(c.Field("challengeId").Eq(challengeId)).FindAll()
+	challengeQuestionDocuments, err := db.Query(ChallengeQuestionCollectionName).
+		Where(c.Field("challengeId").Eq(challengeId)).
+		FindAll()
 	if err != nil {
 		return nil, err
 	}
@@ -52,10 +70,13 @@ func LoadByChallengeId(challengeId string) ([]*ChallengeQuestion, error) {
 
 func LoadByTitleSlug(titleSlug string) (*ChallengeQuestion, error) {
 	db := GetDb()
+	defer db.Close()
 
 	var challengeQuestion ChallengeQuestion
 
-	challengeQuestionDocument, err := db.Query(ChallengeQuestionCollection).Where(c.Field("titleSlug").Eq(titleSlug)).FindFirst()
+	challengeQuestionDocument, err := db.Query(ChallengeQuestionCollectionName).
+		Where(c.Field("titleSlug").Eq(titleSlug)).
+		FindFirst()
 	if err != nil {
 		return nil, err
 	}
