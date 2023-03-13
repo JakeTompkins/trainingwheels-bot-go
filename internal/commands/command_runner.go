@@ -51,6 +51,9 @@ func PopulateDb() (string, error) {
 	return "Leetcode questions successfully downloaded", nil
 }
 
+func NewChallenge() {
+}
+
 func commandHelp() string {
 	return `
 	"!user"				Get user's leetcode stats
