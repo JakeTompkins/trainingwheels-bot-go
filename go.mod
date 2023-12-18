@@ -3,7 +3,11 @@ module github.com/jaketompkins/trainingwheels-bot-go
 go 1.20
 
 require (
-	github.com/bwmarrin/discordgo v0.27.0 // indirect
+	github.com/ostafen/clover v1.2.0
+	github.com/valyala/fastjson v1.6.4
+)
+
+require (
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/dgraph-io/badger/v3 v3.2103.2 // indirect
@@ -15,14 +19,10 @@ require (
 	github.com/golang/protobuf v1.3.1 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/flatbuffers v1.12.1 // indirect
-	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/klauspost/compress v1.12.3 // indirect
-	github.com/ostafen/clover v1.2.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
-	github.com/valyala/fastjson v1.6.4 // indirect
 	go.opencensus.io v0.22.5 // indirect
-	golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b // indirect
-	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
-	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 )
